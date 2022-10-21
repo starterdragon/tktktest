@@ -4,5 +4,8 @@
     "express": "^4.17.2",
     "socket.io": "^4.4.1",
     "tiktok-live-connector": "^1.0.0"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
   }
 }
