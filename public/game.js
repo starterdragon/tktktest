@@ -24,27 +24,32 @@ function initGame() {
 }
 
 function newRound() {
+	winner = "";
 	phase = 0;
 	timer = getTime.phase0;
-	winner = "";
+	
+	wordText.innerText = "R E A D Y";
+	hintText.innerText = "The witches are mixing the words!!";
+}
 
+function genWord() {
 	if (previousObj !== "") words.push(previousObj);
 
 	var randomObj = words[ Math.floor(Math.random() * words.length) ];
 	var previousObj = randomObj;
-	
+
 	//remove it from the array
 	words.splice(randomObj, 1);
-	
+
 	var wordArray = randomObj.word.split("");
-	
+
 	for (let i = wordArray.length - 1; i > 0; i--) {
 		let j = Math.floor(Math.random() * (i + 1));
 		[wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
 	}
 
-	wordText.innerText = "G E T - R E A D Y"
-	hintText.innerText = "We are mixing the next word.."
+	wordText.innerText = wordArray.join("");
+	hintText.innerText = randomObj.hint;
 	correctWord = randomObj.word.toLowerCase();
 }
 
@@ -55,11 +60,10 @@ function engine() {
 			if (timer <= 0) {
 				phase++;
 				timer = getTime.phase1;
-
-				wordText.innerText = wordArray.join("");
-				hintText.innerText = randomObj.hint;
+				
+				genWord();
 			} else {
-				statusBoard.innerText = "Ready!..";
+				statusBoard.innerText = "Like & Share please!";
 				timeText.innerText = parsetime(timer);
 			}
 		break;
