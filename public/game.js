@@ -57,28 +57,32 @@ const initGame = () => {
 	phase = 1;
 	timer = guessTimer;
 
-    session = setInterval(() => {
+	session = setInterval(() => {
 		startSession();
-	});
+	}, 1000);
 
-    let randomObj = words[Math.floor(Math.random() * words.length)];
-    let wordArray = randomObj.word.split("");
+    	let randomObj = words[Math.floor(Math.random() * words.length)];
+    	let wordArray = randomObj.word.split("");
 	
-    for (let i = wordArray.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
-    }
+    	for (let i = wordArray.length - 1; i > 0; i--) {
+        	let j = Math.floor(Math.random() * (i + 1));
+        	[wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
+    	}
 	
-    wordText.innerText = wordArray.join("");
-    hintText.innerText = randomObj.hint;
-    correctWord = randomObj.word.toLowerCase();;
+    	wordText.innerText = wordArray.join("");
+    	hintText.innerText = randomObj.hint;
+    	correctWord = randomObj.word.toLowerCase();;
 }
 
 function trychat(chat) {
-	if (chat.length == correctWord.length) {
-		if (chat == correctWord) {
-			initGame();
+	try {
+		if (chat.length == correctWord.length) {
+			if (chat == correctWord) {
+				initGame();
+			}
 		}
+	} catch (e) {
+		//i dont want to deal with it for the meantime
 	}
 }
 
