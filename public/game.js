@@ -36,10 +36,13 @@ function genWord() {
 	if (previousObj !== "") words.push(previousObj);
 
 	var randomObj = words[ Math.floor(Math.random() * words.length) ];
+	
+	if (randomObj == null) genWord();
+
 	var previousObj = randomObj;
 
 	//remove it from the array
-	words.splice(randomObj, 1);
+	words.splice(randomObj);
 
 	var wordArray = randomObj.word.split("");
 
