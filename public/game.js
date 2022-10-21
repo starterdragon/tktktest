@@ -1,14 +1,14 @@
 const wordText = document.querySelector(".word");
-hintText = document.querySelector(".hint span");
-timeText = document.querySelector(".time b");
-statusBoard = document.querySelector(".status span");
+const hintText = document.querySelector(".hint span");
+const timeText = document.querySelector(".time b");
+const statusBoard = document.querySelector(".status span");
 
 let correctWord, session, timer;
-let leaderboard = {}; //max of 10
+var leaderboard = {}; //max of 10
 
-let guessTimer = 120;
-let resetTimer = 15;
-let phase = 1;
+var guessTimer = 120;
+var resetTimer = 15;
+var phase = 1;
 
 function startWordSession() {
 	switch (phase) {
@@ -61,8 +61,9 @@ function initGame() {
 		startWordSession();
 	}, 1000);
 
-    	let randomObj = words[Math.floor(Math.random() * words.length)];
-    	let wordArray = randomObj.word.split("");
+	var words = getWords();
+    	var randomObj = words[Math.floor(Math.random() * words.length)];
+    	var wordArray = randomObj.word.split("");
 	
     	for (let i = wordArray.length - 1; i > 0; i--) {
         	let j = Math.floor(Math.random() * (i + 1));
