@@ -52,7 +52,6 @@ function connect(user) {
 				break;
 					
 				default:
-					clearInterval(delay);
 					$('#stateText').text("");
 
 					// reset stats
@@ -62,13 +61,13 @@ function connect(user) {
 					updateRoomStats();
 
 					initGame();
+
+					clearInterval(delay);
 				break;
 			}
 			i++;
 		}, 1000);
-		
-		//var delly = setTimeout(() => {	}, 1000 * 3);
-		
+
         }).catch(errorMessage => {
             //$('#stateText').text(errorMessage);
 			sendForm(errorMessage + "\n");
@@ -84,7 +83,7 @@ function sanitize(text) {
 function updateRoomStats() {
 	let txt = "Viewers: " + viewerCount.toLocaleString() + " | Likes: " + likeCount.toLocaleString() + " | Gifts: " + diamondsCount.toLocaleString();
 	$('#roomStats').text(txt);
-    //$('#roomStats').html(`Viewers: <b>${viewerCount.toLocaleString()}</b> Likes: <b>${likeCount.toLocaleString()}</b> Gifts: <b>${diamondsCount.toLocaleString()}</b>`)	
+    //$('#roomStats').html(text)	
 }
 
 function generateUsernameLink(data) {
@@ -170,7 +169,6 @@ function addGiftItem(data) {
     }, 800);
 }
 
-
 // viewer stats
 connection.on('roomUser', (msg) => {
     if (typeof msg.viewerCount === 'number') {
@@ -202,7 +200,7 @@ connection.on('member', (msg) => {
 // New chat comment received
 connection.on('chat', (msg) => {
 	let chat = msg.comment;
-	if (chat !== null) trychat(chat);
+	trychat(msg.uniqueId, chat);
 	addChatItem('', msg, chat);
 })
 

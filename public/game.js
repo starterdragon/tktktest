@@ -3,47 +3,105 @@ const hintText = document.querySelector(".hint span");
 const timeText = document.querySelector(".time b");
 const statusBoard = document.querySelector(".status span");
 
-let correctWord, session, timer;
-var leaderboard = {}; //max of 10
+let correctWord;
 
-var guessTimer = 120;
-var resetTimer = 15;
-var phase = 1;
+var words = getWords();
+var heartbeat, timer;
+var previousObj = null;
+var leaderboard = []; //max of 10
 
-function startWordSession() {
+var winner;
+var phase = 0;
+
+const getTime = {"phase0":5, "phase1":120, "phase2":5};
+
+function initGame() {
+	newRound();
+
+	let heartbeat = setInterval(() => {
+		engine();
+	}, 1000);
+}
+
+function newRound() {
+	phase = 0;
+	timer = getTime.phase0;
+	winner = "";
+
+	if (previousObj !== null) words.push(previousObj);
+
+	var randomObj = words[ Math.floor(Math.random() * words.length) ];
+	var previousObj = randomObj;
+	
+	//remove it from the array
+	words.splice(randomObj, 1);
+	
+	var wordArray = randomObj.word.split("");
+	
+	for (let i = wordArray.length - 1; i > 0; i--) {
+		let j = Math.floor(Math.random() * (i + 1));
+		[wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
+	}
+	
+	wordText.innerText = wordArray.join("");
+	hintText.innerText = randomObj.hint;
+	correctWord = randomObj.word.toLowerCase();
+	
+	//remove the correct word from the array
+	//for (let i = 0; i < words.length; i++) {
+	//	if (words[i].word === correctWord) {
+	//		words.splice(i, 1);		
+	//		break;
+	//	}
+	//}
+}
+
+function engine() {
 	switch (phase) {
+		// PRE-GAME
+		case 0:
+			if (timer <= 0) {
+				phase++;
+				timer = getTime.phase1;
+			} else {
+				statusBoard.innerText = "Generating Word..";
+				timeText.innerText = parsetime(timer);
+			}
+		break;
+		
+		// DURING GAME
 		case 1:
 			if (timer <= 0) {
 				phase++;
-				timer = resetTimer;
+				timer = getTime.phase2; //time is up..
 			} else {
 				statusBoard.innerText = "Comment your Guess!";
 				timeText.innerText = parsetime(timer);
 			}
 		break;
-		
+
+		// POST-GAME
 		case 2:
-			if (timer < 1) {
-				phase++;
-				timer = resetTimer;
-				
-			} else if (timer < 5) {
-				statusBoard.innerText = "Ready your fingers..!";
-				timeText.innerText = parsetime(timer);
+			if (timer <= 0) {
+				newRound();
 			} else {
-				statusBoard.innerText = "Loading the next word..";
-				timeText.innerText = parsetime(timer);
+				statusBoard.innerText = "Time is up..!";
+				timeText.innerText = "--:--:--";
 			}
 		break;
-		
+
+		// HAS WINNER
 		default:
-			statusBoard.innerText = "";
-			clearInterval(session);
-			initGame();
+			if (timer <= 0) {
+				newRound();
+			} else {
+				statusBoard.innerText = "WINNER: " + winner;
+				timeText.innerText = "--:--:--";
+			}
 		break;
 	}
-	
-	return timer--;
+
+	timer--;
 }
 
 function broadcaster() {
@@ -53,33 +111,23 @@ function broadcaster() {
 }
 //broadcaster();
 
-function initGame() {
-	phase = 1;
-	timer = guessTimer;
-
-	session = setInterval(() => {
-		startWordSession();
-	}, 1000);
-
-	var words = getWords();
-    	var randomObj = words[Math.floor(Math.random() * words.length)];
-    	var wordArray = randomObj.word.split("");
+function reward(username) {
+	timer = 5;
+	phase = 3;
+	winner = username;
 	
-    	for (let i = wordArray.length - 1; i > 0; i--) {
-        	let j = Math.floor(Math.random() * (i + 1));
-        	[wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
-    	}
-	
-    	wordText.innerText = wordArray.join("");
-    	hintText.innerText = randomObj.hint;
-    	correctWord = randomObj.word.toLowerCase();;
+	if (username in leaderboard) {
+		leaderboard.username += 1;
+	} else {
+		leaderboard.username = 0;
+	}
 }
 
-function trychat(chat) {
+function trychat(username, chat) {
 	try {
 		if (chat.length == correctWord.length) {
 			if (chat == correctWord) {
-				initGame();
+				reward(username);
 			}
 		}
 	} catch (e) {
@@ -88,9 +136,14 @@ function trychat(chat) {
 }
 
 function parsetime(i) {
-	var minutes = Math.floor(i / 60);
-	var seconds = i - minutes * 60;
-	var hours = Math.floor(i / 3600);
+	var sec_num = parseInt(i, 10); // don't forget the second param
+    var hours   = Math.floor(sec_num / 3600);
+	var minutes = Math.floor((sec_num % 3600) / 60);
+	var seconds = Math.floor(sec_num % 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
 
 	return hours + ":" + minutes + ":" + seconds;
 }
