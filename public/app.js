@@ -7,10 +7,9 @@ let viewerCount = 0;
 let likeCount = 0;
 let diamondsCount = 0;
 
-let username = "";
+var connected = false;
 
 $(document).ready(() => {
-	username = "";
 	sendForm("");
 })
 
@@ -24,54 +23,52 @@ function sendForm(msg) {
 }
 
 function connect(user) {
-    if (username == '') {
-		username = user;
-		
-        $('#stateText').text('Acquiring livestream info from ' + user);
+    if (connected == false) {
+        $('#stateText').text('Connecting to ' + user);
 
         connection.connect(user, {
             enableExtendedGiftInfo: true
         }).then(state => {
-		var i = 0;
-		var delay = setInterval(() => {
-			switch (i) {
-				case 0:
-					$('#stateText').text("Connected");
-				break;
-					
-				case 1:
-					$('#stateText').text("Connected.");
-				break;
-					
-				case 2:
-					$('#stateText').text("Connected..");
-				break;
-					
-				case 3:
-					$('#stateText').text("Connected..!");
-				break;
-					
-				default:
-					$('#stateText').text("");
+			var i = 0;
+			var delay = setInterval(() => {
+				switch (i) {
+					case 0:
+						$('#stateText').text("Linking.");
+					break;
+						
+					case 1:
+						$('#stateText').text("Linking..");
+					break;
+						
+					case 2:
+						$('#stateText').text("Linking...");
+					break;
+						
+					case 3:
+						$('#stateText').text("Connected!!");
+					break;
+						
+					default:
+						$('#stateText').text("");
 
-					// reset stats
-					viewerCount = 0;
-					likeCount = 0;
-					diamondsCount = 0;
-					updateRoomStats();
+						// reset stats
+						viewerCount = 0;
+						likeCount = 0;
+						diamondsCount = 0;
+						connected = true;
 
-					initGame();
+						updateRoomStats();
 
-					clearInterval(delay);
-				break;
-			}
-			i++;
-		}, 1000);
+						initGame();
 
+						clearInterval(delay);
+					break;
+				}
+				i++;
+			}, 1000);
         }).catch(errorMessage => {
-            //$('#stateText').text(errorMessage);
 			sendForm(errorMessage + "\n");
-        })
+		});
     }
 }
 
@@ -98,7 +95,7 @@ function isPendingStreak(data) {
  * Add a new message to the chat container
  */
 function addChatItem(color, data, text, summarize) {
-    let container = $('.chatcontainer')
+    var container = $('.chatcontainer');
 
     if (container.find('div').length > 500) {
         container.find('div').slice(0, 200).remove();
@@ -126,7 +123,7 @@ function addChatItem(color, data, text, summarize) {
  * Add a new gift to the gift container
  */
 function addGiftItem(data) {
-    let container = $('.giftcontainer');
+    var container = $('.giftcontainer');
 
     if (container.find('div').length > 200) {
         container.find('div').slice(0, 100).remove();
@@ -171,7 +168,9 @@ function addGiftItem(data) {
 
 // viewer stats
 connection.on('roomUser', (msg) => {
-    if (typeof msg.viewerCount === 'number') {
+    if (connected == false) return;
+	
+	if (typeof msg.viewerCount === 'number') {
         viewerCount = msg.viewerCount;
         updateRoomStats();
     }
@@ -179,7 +178,9 @@ connection.on('roomUser', (msg) => {
 
 // like stats
 connection.on('like', (msg) => {
-    if (typeof msg.totalLikeCount === 'number') {
+    if (connected == false) return;
+
+	if (typeof msg.totalLikeCount === 'number') {
         likeCount = msg.totalLikeCount;
         updateRoomStats();
     }
@@ -190,8 +191,10 @@ connection.on('like', (msg) => {
 })
 
 // Member join
-let joinMsgDelay = 0;
+//let joinMsgDelay = 0;
 connection.on('member', (msg) => {
+	if (connected == false) return;
+	
 	let texts = ["has descended..", "brought a pizza!", "is curious.."];
 	let jointext = texts[ Math.floor(Math.random() * texts.length) ];
 	addChatItem('#21b2c2', msg, jointext + ' [Join]', true);
@@ -206,7 +209,9 @@ connection.on('chat', (msg) => {
 
 // New gift received
 connection.on('gift', (data) => {
-    if (!isPendingStreak(data) && data.diamondCount > 0) {
+    if (connected == false) return;
+	
+	if (!isPendingStreak(data) && data.diamondCount > 0) {
         diamondsCount += (data.diamondCount * data.repeatCount);
         updateRoomStats();
     }
@@ -216,12 +221,11 @@ connection.on('gift', (data) => {
 
 // share, follow
 connection.on('social', (data) => {
-
     let color = data.displayType.includes('follow') ? '#ff005e' : '#2fb816';
     addChatItem(color, data, data.label.replace('{0:user}', ''));
 })
 
 connection.on('streamEnd', () => {
-	username = '';
+	connected = false;
     sendForm("TikTok Live has Ended\n");
 })

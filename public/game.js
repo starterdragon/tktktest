@@ -7,7 +7,7 @@ let correctWord;
 
 var words = getWords();
 var heartbeat, timer;
-var previousObj = null;
+var previousObj = "";
 var leaderboard = []; //max of 10
 
 var winner;
@@ -28,7 +28,7 @@ function newRound() {
 	timer = getTime.phase0;
 	winner = "";
 
-	if (previousObj !== null) words.push(previousObj);
+	if (previousObj !== "") words.push(previousObj);
 
 	var randomObj = words[ Math.floor(Math.random() * words.length) ];
 	var previousObj = randomObj;
@@ -46,14 +46,6 @@ function newRound() {
 	wordText.innerText = wordArray.join("");
 	hintText.innerText = randomObj.hint;
 	correctWord = randomObj.word.toLowerCase();
-	
-	//remove the correct word from the array
-	//for (let i = 0; i < words.length; i++) {
-	//	if (words[i].word === correctWord) {
-	//		words.splice(i, 1);		
-	//		break;
-	//	}
-	//}
 }
 
 function engine() {
@@ -85,6 +77,7 @@ function engine() {
 			if (timer <= 0) {
 				newRound();
 			} else {
+				wordText.innerText = correctWord;
 				statusBoard.innerText = "Time is up..!";
 				timeText.innerText = "--:--:--";
 			}
@@ -95,7 +88,7 @@ function engine() {
 			if (timer <= 0) {
 				newRound();
 			} else {
-				statusBoard.innerText = "WINNER: " + winner;
+				statusBoard.innerText = "WINNER: @" + winner;
 				timeText.innerText = "--:--:--";
 			}
 		break;
