@@ -1,4 +1,4 @@
-let words = [
+var words = [
     {
         word: "keyboard",
         hint: "A device used to input letters"
@@ -92,3 +92,7 @@ let words = [
         hint: "Place containing collection of books"
     },
 ]
+
+function getWords() {
+    return words;
+}
