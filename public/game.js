@@ -10,7 +10,7 @@ let guessTimer = 120;
 let resetTimer = 15;
 let phase = 1;
 
-function startSession() {
+function startWordSession() {
 	switch (phase) {
 		case 1:
 			if (timer <= 0) {
@@ -38,7 +38,7 @@ function startSession() {
 		
 		default:
 			statusBoard.innerText = "";
-			clearInterval(timer);
+			clearInterval(session);
 			initGame();
 		break;
 	}
@@ -46,19 +46,19 @@ function startSession() {
 	return timer--;
 }
 
-const broadcaster = () => {
-	let broadcaster = setInterval(() => {
+function broadcaster() {
+	broadcaster = setInterval(() => {
 		//to do, add broadcast messages
 	}, 1000 * 4);
 }
 //broadcaster();
 
-const initGame = () => {
+function initGame() {
 	phase = 1;
 	timer = guessTimer;
 
 	session = setInterval(() => {
-		startSession();
+		startWordSession();
 	}, 1000);
 
     	let randomObj = words[Math.floor(Math.random() * words.length)];
