@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok LiveGuess!</title>
+
+    <link rel="stylesheet" href="style.css">
+	
+    <style>
+        body {
+            min-width: 200px !important;
+        }
+
+        .usernamelink {
+            color: rgb(102, 143, 217) !important;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+        }
+
+        .eventcontainer > div {
+            margin-top: 5px;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<script src="words.js" defer></script>
+	<script src="game.js" defer></script>
+	
+	<script src="connection.js"></script>
+    <script src="app.js"></script>
+</head>
+
+<body>
+	
+	
+	<div class="container">
+		<div class="container">
+			<table class="splitchattable">
+				<tr>
+					<td>
+						<h3 class="containerheader">Viewer Events</h3>
+						<div class="chatcontainer">
+							
+						</div>
+					</td>
+					
+					<td>
+						<h3 class="containerheader">Gifts</h3>
+						<div class="giftcontainer">
+							
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<table class="splitstatetable">
+			<tr>
+				<td>
+					<pre id="stateText"></pre>
+				</td>
+				<td>
+					<!--<div id="roomStats"></div>-->
+					<pre id="roomStats"></div>
+				</td>
+			</tr>
+		</table>
+			
+		<h2>Word Scramble</h2>
+			
+		<div class="content">
+			<p class="word"></p>
+			<div class="details">
+				<p class="hint">Hint: <span></span></p>
+				<p class="time">Time Left: <span><b>30</b>s</span></p>
+				<p class="status"><span></span></p>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

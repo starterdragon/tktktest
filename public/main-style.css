@@ -1,0 +1,18 @@
+body {
+    font-family:Arial, Helvetica, sans-serif;
+    min-width: 800px;
+}
+
+h1 {
+    font-size: 1.8em;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+a {
+    color: #58a6ff;
+}
+
+.head {
+    margin-bottom: 15px;
+}
