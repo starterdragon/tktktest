@@ -1,7 +1,7 @@
 let ipRequestCounts = {};
 
-let maxIpConnections = 10;
-let maxIpRequestsPerMinute = 5;
+let maxIpConnections = 1;
+let maxIpRequestsPerMinute = 1;
 
 setInterval(() => {
     ipRequestCounts = {};
