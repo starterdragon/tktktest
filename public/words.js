@@ -1,7 +1,7 @@
 let words = [
     {
-        word: "addition",
-        hint: "The process of adding numbers"
+        word: "keyboard",
+        hint: "A device used to input letters"
     },
     {
         word: "meeting",
@@ -56,8 +56,8 @@ let words = [
         hint: "Ability of tongue to detect flavour"
     },
     {
-        word: "store",
-        hint: "Large shop where goods are traded"
+        word: "manila",
+        hint: "The Capital city of the Philippines"
     },
     {
         word: "field",
