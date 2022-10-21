@@ -1,5 +1,5 @@
 // This will use the demo backend if you open index.html locally via file://, otherwise your server will be used
-let backendUrl = "https://tiktok-chat-reader.zerody.one/"; //location.protocol === 'file:' ? "https://tiktok-chat-reader.zerody.one/" : undefined; //
+let backendUrl = location.protocol === 'file:' ? "https://tiktok-chat-reader.zerody.one/" : undefined; //"https://tiktok-chat-reader.zerody.one/"; //
 let connection = new TikTokIOConnection(backendUrl);
 
 // Counter
@@ -32,20 +32,43 @@ function connect(user) {
         connection.connect(user, {
             enableExtendedGiftInfo: true
         }).then(state => {
-            $('#stateText').text("Connected..!");
-	
-			setTimeout(() => {
-				$('#stateText').text("");
-				
-				// reset stats
-				viewerCount = 0;
-				likeCount = 0;
-				diamondsCount = 0;
-				updateRoomStats();
+		var i = 0;
+		var delay = setInterval(() => {
+			switch (i) {
+				case 0:
+					$('#stateText').text("Connected");
+				break;
+					
+				case 1:
+					$('#stateText').text("Connected.");
+				break;
+					
+				case 2:
+					$('#stateText').text("Connected..");
+				break;
+					
+				case 3:
+					$('#stateText').text("Connected..!");
+				break;
+					
+				default:
+					clearInterval(delay);
+					$('#stateText').text("");
 
-				initGame();
-			}, 1000 * 3);
-			
+					// reset stats
+					viewerCount = 0;
+					likeCount = 0;
+					diamondsCount = 0;
+					updateRoomStats();
+
+					initGame();
+				break;
+			}
+			i++;
+		}, 1000);
+		
+		//var delly = setTimeout(() => {	}, 1000 * 3);
+		
         }).catch(errorMessage => {
             //$('#stateText').text(errorMessage);
 			sendForm(errorMessage + "\n");
