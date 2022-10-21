@@ -10,7 +10,7 @@ let guessTimer = 120;
 let resetTimer = 15;
 let phase = 1;
 
-function session() {
+function startSession() {
 	switch (phase) {
 		case 1:
 			if (timer <= 0) {
@@ -58,8 +58,8 @@ const initGame = () => {
 	timer = guessTimer;
 
     session = setInterval(() => {
-		session();
-	}
+		startSession();
+	});
 
     let randomObj = words[Math.floor(Math.random() * words.length)];
     let wordArray = randomObj.word.split("");
