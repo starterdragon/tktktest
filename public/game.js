@@ -42,9 +42,9 @@ function newRound() {
 		let j = Math.floor(Math.random() * (i + 1));
 		[wordArray[i], wordArray[j]] = [wordArray[j], wordArray[i]];
 	}
-	
-	wordText.innerText = wordArray.join("");
-	hintText.innerText = randomObj.hint;
+
+	wordText.innerText = "G E T - R E A D Y"
+	hintText.innerText = "We are mixing the next word.."
 	correctWord = randomObj.word.toLowerCase();
 }
 
@@ -55,8 +55,11 @@ function engine() {
 			if (timer <= 0) {
 				phase++;
 				timer = getTime.phase1;
+
+				wordText.innerText = wordArray.join("");
+				hintText.innerText = randomObj.hint;
 			} else {
-				statusBoard.innerText = "Generating Word..";
+				statusBoard.innerText = "Ready!..";
 				timeText.innerText = parsetime(timer);
 			}
 		break;

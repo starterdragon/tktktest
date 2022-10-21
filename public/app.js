@@ -73,8 +73,8 @@ function connect(user) {
 }
 
 // Prevent Cross site scripting (XSS)
-function sanitize(text) {
-    return text.replace(/</g, '&lt;')
+function sanitize(message) {
+    return message.replace(/</g, '&lt;')
 }
 
 function updateRoomStats() {
@@ -94,21 +94,23 @@ function isPendingStreak(data) {
 /**
  * Add a new message to the chat container
  */
-function addChatItem(color, data, text, summarize) {
+function addChatItem(color, data, message, summarize) {
     var container = $('.chatcontainer');
 
     if (container.find('div').length > 500) {
         container.find('div').slice(0, 200).remove();
     }
 
-    container.find('.temporary').remove();
+	container.find('.temporary').remove();
+
+	message = sanitize(message);
 
     container.append(`
         <div class=${summarize ? 'temporary' : 'static'}>
             <img class="miniprofilepicture" src="${data.profilePictureUrl}">
             <span>
                 <b>${generateUsernameLink(data)}:</b> 
-                <span style="color:${color}">${sanitize(text)}</span>
+                <span style="color:${color}">${message}</span>
             </span>
         </div>
     `);
@@ -191,20 +193,20 @@ connection.on('like', (msg) => {
 })
 
 // Member join
-//let joinMsgDelay = 0;
 connection.on('member', (msg) => {
 	if (connected == false) return;
 	
 	let texts = ["has descended..", "brought a pizza!", "is curious.."];
 	let jointext = texts[ Math.floor(Math.random() * texts.length) ];
-	addChatItem('#21b2c2', msg, jointext + ' [Join]', true);
+	addChatItem('#21b2c2', msg, jointext + ' [Join]');
+	//addChatItem('#21b2c2', msg, jointext + ' [Join]', true);
 })
 
 // New chat comment received
 connection.on('chat', (msg) => {
 	let chat = msg.comment;
-	trychat(msg.uniqueId, chat);
 	addChatItem('', msg, chat);
+	trychat(msg.uniqueId, chat); //for game.js
 })
 
 // New gift received
